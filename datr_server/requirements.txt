@@ -1,0 +1,5 @@
+django-cors-headers
+djangorestframework
+djangorestframework-simplejwt
+googlemaps
+PyJWT
