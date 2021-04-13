@@ -39,6 +39,10 @@ code {
 .datr-slogan {
   text-align: center;
   font-size: 40px;
-  color: white;
+  color: red;
   font-family: Comfortaa;
+}
+
+.datr-table {
+  border: 1px solid black;
 }

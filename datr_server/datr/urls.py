@@ -16,14 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
-from .views import post_collection, post_element, login_user, logout_user ,create_user, get_user_info
+from .views import logout_user ,create_user, get_user_info, get_user_ideas, generate_new_user_ideas, get_saved_date_locations, save_date_location
 from rest_framework_simplejwt import views as jwt_views
   
-urlpatterns = [
-    
-]
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     # jwt api
@@ -34,10 +29,11 @@ urlpatterns = [
          jwt_views.TokenRefreshView.as_view(),
          name ='token_refresh'),
     # api
-    url('api/see_users', post_collection),
-    url('api/see_user', post_element),
-    url('api/login_user', login_user),
     url('api/logout_user', logout_user),
     url('api/create_user', create_user),
-    url('api/get_user_info', get_user_info)
+    url('api/get_user_info', get_user_info),
+    url('api/get_user_ideas', get_user_ideas),
+    url('api/generate_new_user_ideas', generate_new_user_ideas),
+    url('api/save_date_location', save_date_location),
+    url('api/get_saved_date_locations', get_saved_date_locations)
 ]
