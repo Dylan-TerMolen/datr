@@ -8,11 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import DatrUser, DateLocation
 from .serializers import DatrUserSerializer, DateLocationSerializer
-import googlemaps
-from .env import GOOGLE_CLOUD_API_KEY
-from .utils import parse_api_place
-
-gmaps = googlemaps.Client(key=GOOGLE_CLOUD_API_KEY)
+from .new_date import generate_ideas
 
 NOT_AUTHED_RESPONSE = JsonResponse({
     "status": "failure",
@@ -71,30 +67,33 @@ def logout_user(request):
     })
     return response
         
-    
-# Get the saved dating ideas for the user that is currently logged in
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_ideas(request):
-    if not request.user.is_authenticated:
-        return NOT_AUTHED_RESPONSE
-
-    response = gmaps.places(query="adventure")
-    places = response["results"]
-    
-    return JsonResponse({
-        "places": [parse_api_place(p) for p in places[:3]],
-        "status": "success",
-        "username": request.user.username
-        })
 
 # Generate new dating ideas for a user based on a set of inputs
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def generate_new_user_ideas(request):
-    pass
+def generate_new_idea(request):
+    if not request.user.is_authenticated:
+        return NOT_AUTHED_RESPONSE
+    try:
+        preferences = request.GET["preferences"].split(",")
+        moods = request.GET["moods"].split(",")
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "reason": "missing parameters"
+        })
 
 
+    places = generate_ideas(preferences, moods)
+
+    return JsonResponse({
+        "places": places,
+        "status": "success",
+        "username": request.user.username
+    })
+
+
+# Save a date idea for a user given the necessary information about that date
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def save_date_location(request):
@@ -106,14 +105,19 @@ def save_date_location(request):
         place_id = request.GET["place_id"]
         photo_reference = request.GET["photo_reference"]
         location = DateLocation(name=name, address=address, place_id=place_id, photo_reference=photo_reference)
-        location.save()
-        location.user.add(request.user)
-        status = "success"
+        if len(DateLocation.objects.filter(place_id=place_id)) == 0:
+            location.save()
+            location.user.add(request.user)
+            status = "success"
+        else:
+            status = "existed"
+
     except Exception as e:
         status = "failed"
 
     return JsonResponse({"status": status})
 
+# Get the saved date locations for a user
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_saved_date_locations(request):
@@ -124,3 +128,12 @@ def get_saved_date_locations(request):
     serialized = DateLocationSerializer(saved_locations, many=True)
 
     return JsonResponse({"data": serialized.data, "status": "success", "username": request.user.username}, safe=False)
+
+# Route for the client to get username for token
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def check_logged_in(request):
+    if not request.user.is_authenticated:
+        return NOT_AUTHED_RESPONSE
+    
+    return JsonResponse({"status": "success", "username": request.user.username})

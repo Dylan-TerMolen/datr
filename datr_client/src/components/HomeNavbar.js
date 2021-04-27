@@ -9,7 +9,7 @@ import {
 export default function HomeNavbar (){
   return (
     <div>
-      <Navbar expand="md">
+      <Navbar className="bg-white" expand="md">
         <NavbarBrand className="text-danger" href="/">Home</NavbarBrand>
         <Nav className="mr-auto" navbar>
           <NavItem>

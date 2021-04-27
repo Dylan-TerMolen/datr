@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
-from .views import logout_user ,create_user, get_user_info, get_user_ideas, generate_new_user_ideas, get_saved_date_locations, save_date_location
+from .views import logout_user, create_user, get_user_info, generate_new_idea, check_logged_in, get_saved_date_locations, save_date_location
 from rest_framework_simplejwt import views as jwt_views
   
 urlpatterns = [
@@ -32,8 +32,8 @@ urlpatterns = [
     url('api/logout_user', logout_user),
     url('api/create_user', create_user),
     url('api/get_user_info', get_user_info),
-    url('api/get_user_ideas', get_user_ideas),
-    url('api/generate_new_user_ideas', generate_new_user_ideas),
     url('api/save_date_location', save_date_location),
-    url('api/get_saved_date_locations', get_saved_date_locations)
+    url('api/get_saved_date_locations', get_saved_date_locations),
+    url('api/generate_new_idea', generate_new_idea),
+    url('api/check_logged_in', check_logged_in)
 ]

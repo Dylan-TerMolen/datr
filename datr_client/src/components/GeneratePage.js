@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { Table, Spinner, Button } from 'reactstrap'
+import PreferenceStage from "./PreferenceStage"
+import MoodStage from "./MoodStage"
 import UserNavbar from "./UserNavbar"
+import IdeasStage from "./IdeasStage"
 
 export default function GeneratePage() {
-    const [userInfo, setUserInfo] = useState(null)
     const [username, setUsername] = useState(null)
+    /* Stage represents the part of the questionnaire the user it at */
+    const [stage, setStage] = useState(1)
+    const [preferences, setPreferences] = useState([])
+    const [moods, setMoods] = useState([])
     const history = useHistory()
 
     /* On loading this component fetch the user's information */
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/get_user_ideas`, {
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("datrToken")}`
-            }
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/check_logged_in`, {
+            headers: {"Authorization": `Bearer ${localStorage.getItem("datrToken")}`}
         })
             .then(res => res.json())
             .then(result => {
                 if (result.status === "success") {
-                    setUserInfo(result.places)
                     setUsername(result.username)
                 } else {
                     history.push("/login")
@@ -26,38 +28,24 @@ export default function GeneratePage() {
         })
     }, [history])
 
-    const handleSaveLocation = (e, place) => {
-        const queryParams = (new URLSearchParams(place)).toString()
-        
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/save_date_location?${queryParams}`, {
-            method: "POST",
-            headers: {"Authorization": `Bearer ${localStorage.getItem("datrToken")}`},
-        })
+    const renderStage = (stage) => {
+        switch(stage) {
+            case 1:
+                return <PreferenceStage stage={stage} setStage={setStage} updateStateAbove={setPreferences}/>
+            case 2:
+                return <MoodStage stage={stage} setStage={setStage} updateStateAbove={setMoods}/>
+            case 3:
+                return <IdeasStage setStage={setStage} moods={moods} preferences={preferences}/>
+            default:
+                return <h1>State Error</h1>
+        }
     }
+
     return (
         <div>
             <UserNavbar username={username}/>
-            {userInfo !== null &&
-                <Table className="datr-table">
-                    <thead>
-                    <tr>
-                        <th>Place Name</th>
-                        <th>Place Address</th>
-                        <th>Place ID</th>
-                        <th>Save Idea!</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {userInfo.map((place, i) => <tr key={i}>
-                            <td>{place.name}</td>
-                            <td>{place.address}</td>
-                            <td>{place.place_id}</td>
-                            <td><Button color="danger" onClick={(e) => handleSaveLocation(e, place)}>Save Idea</Button></td>
-                        </tr>)}
-                    </tbody>
-                </Table>
-            }
-            {userInfo === null && <Spinner color="danger" />}
+            {renderStage(stage)}
         </div>
     )
 }
+
