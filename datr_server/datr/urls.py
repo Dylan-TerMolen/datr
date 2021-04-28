@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf.urls import url
 from .views import logout_user, create_user, get_user_info, generate_new_idea, check_logged_in, get_saved_date_locations, save_date_location
 from rest_framework_simplejwt import views as jwt_views
+from .social_login_views import social_auth
   
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +29,9 @@ urlpatterns = [
     path('api/token/refresh/',
          jwt_views.TokenRefreshView.as_view(),
          name ='token_refresh'),
+    # fb auth
+    url('', include('social.apps.django_app.urls', namespace='social')),
+    path("api/social-auth", social_auth),
     # api
     url('api/logout_user', logout_user),
     url('api/create_user', create_user),

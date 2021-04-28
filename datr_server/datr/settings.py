@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from .env import FACEBOOK_SECRET_KEY, FACEBOOK_APP_ID
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +28,8 @@ SECRET_KEY = 'django-insecure-lrtw1jqrx=za_43qyped9k2fa83it9bu_65%278=5eo$7t3!#)
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+REST_USE_JWT = True
+SITE_ID = 2
 
 # Application definition
 
@@ -37,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
+    'social.apps.django_app.default',
+    'social_django',
     'datr',
 ]
 
@@ -50,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'datr.urls'
@@ -142,3 +149,14 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+SOCIAL_AUTH_FACEBOOK_KEY = FACEBOOK_APP_ID
+SOCIAL_AUTH_FACEBOOK_SECRET = FACEBOOK_SECRET_KEY
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']

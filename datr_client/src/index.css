@@ -81,3 +81,16 @@ code {
   will-change: transform;
   background-image: linear-gradient(white, red);
 }
+
+.datr-card {
+  border-radius: 20% 20% 5% 5%;
+  background-color: white;
+}
+
+img {
+  border-radius: 20% 20% 0% 0%;
+}
+
+form {
+  width: 300px
+}

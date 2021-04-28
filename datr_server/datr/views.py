@@ -10,6 +10,7 @@ from .models import DatrUser, DateLocation
 from .serializers import DatrUserSerializer, DateLocationSerializer
 from .new_date import generate_ideas
 
+
 NOT_AUTHED_RESPONSE = JsonResponse({
     "status": "failure",
     "reason": "Not properly authenticated"

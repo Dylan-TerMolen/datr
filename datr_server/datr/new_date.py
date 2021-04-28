@@ -37,14 +37,14 @@ mood_mappings_to_type = {
 gmaps = googlemaps.Client(key=GOOGLE_CLOUD_API_KEY)
 
 # Perform algorithm to generate a date idea for a user
-def generate_ideas(preferences, moods):
+def generate_ideas(preferences: [str], moods: [str]) -> [dict]:
     places = []
     type_choice_from_mood = choice(mood_mappings_to_type[choice(moods)])
     activity_choice = get_place("", type_choice_from_mood)
     places.append(activity_choice)
 
     if preferences[0] == "Drinks only":
-        places.append("", place_type="bar")
+        places.append(get_place("", place_type="bar"))
     else:
         places.append(get_place(choice(preferences), place_type="restaurant"))
         places.append(get_place("", place_type="bar"))
@@ -53,7 +53,7 @@ def generate_ideas(preferences, moods):
 
 # Get a place from the google places API given a query string and a place type
 # Then parse the response to get a dict to return to client
-def get_place(query, place_type=None):
+def get_place(query: str, place_type:str=None) -> dict:
     response = gmaps.places(query=query, type=place_type)
     results = response["results"]
     chosen_place = results[randrange(len(results))]
@@ -67,7 +67,7 @@ def get_place(query, place_type=None):
 
 
 # Make a request to get a place's picture given the photo reference returned by the Google Places API 
-def get_places_photo(place):
+def get_places_photo(place:dict) -> str:
     try:
         photo_reference = place["photos"][0]["photo_reference"]
     except KeyError as e:
@@ -83,7 +83,7 @@ def get_places_photo(place):
     
 
 # Parse API Reponse into Serializable Python Dictionary with Needed Attributes
-def parse_api_place(place):
+def parse_api_place(place: dict) -> dict:
     try:
         photo_reference = place["photos"][0]["photo_reference"]
     except KeyError as e:
@@ -93,5 +93,7 @@ def parse_api_place(place):
         "address": place["formatted_address"],
         "name": place["name"],
         "place_id": place["place_id"],
-        "photo_reference": photo_reference
+        "photo_reference": photo_reference,
+        "rating": place["rating"],
+        "total_ratings": place["user_ratings_total"]
     }

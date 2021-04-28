@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom'
 import HomeNavbar from './HomeNavbar';
 import { Input, InputGroupText, InputGroupAddon, InputGroup } from 'reactstrap'
+import FacebookLogin from 'react-facebook-login';
 
 export default function LoginPage() {
     const [username, setUsername] = useState("");
@@ -40,10 +41,33 @@ export default function LoginPage() {
         }
     }
 
+    const onFacebookResponse = (response) => {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/social-auth`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
+                access_token: response.accessToken,
+                provider: "facebook"
+            })
+        })
+          .then(res => res.json())
+          .then(result => {
+              console.log(result)
+              if (result.access){
+                  localStorage.setItem("datrToken", result.access)
+                  history.push("/user/saved")
+              } else {
+                  setFormStatus("Facebook login failure")
+              }
+          })
+    }
+
     return (
         <div className="datr-background">
             <HomeNavbar/>
-            <p>Login to Datr!</p>
+            <p >Login to Datr!</p>
             <form onSubmit={handleSubmit}>
                 <InputGroup>
                     <InputGroupAddon addonType="prepend">
@@ -59,7 +83,14 @@ export default function LoginPage() {
                 </InputGroup>
                 <Input type="submit" value="Log In" data-test="submit" />
                 <div>{formStatus}</div>
+              
             </form>
+            <p>Or login with Facebook!</p>
+            <FacebookLogin
+                appId="214648120069247"
+                fields="name,email,picture"
+                callback={onFacebookResponse} 
+            />
         </div>
     )
 }
