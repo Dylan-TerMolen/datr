@@ -60,6 +60,7 @@ export default function RegisterPage() {
                         <Input type="password" data-test="password" value={retypedPassword} onChange={e => setRetypedPassword(e.target.value)} />
                     </InputGroup>
                     <Input type="submit" value="Register" data-test="submit" />
+                    <h3>Or go to Login page if you want to register with Facebook</h3>
                     <div>{formStatus}</div>
                 </form>
             </div>

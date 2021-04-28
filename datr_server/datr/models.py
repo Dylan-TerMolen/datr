@@ -13,6 +13,7 @@ class DateLocation(models.Model):
     place_id = models.CharField(max_length=30)
     photo_reference = models.CharField(max_length=200)
     user = models.ManyToManyField(DatrUser)
+    photo_string = models.CharField(max_length=50000, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} is located at {self.address}"

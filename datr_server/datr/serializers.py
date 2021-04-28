@@ -10,4 +10,4 @@ class DatrUserSerializer(serializers.ModelSerializer):
 class DateLocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DateLocation
-        fields = ("photo_reference", "name", "address", "place_id")
+        fields = ("photo_string", "name", "address", "place_id")

@@ -105,7 +105,8 @@ def save_date_location(request):
         address = request.GET["address"]
         place_id = request.GET["place_id"]
         photo_reference = request.GET["photo_reference"]
-        location = DateLocation(name=name, address=address, place_id=place_id, photo_reference=photo_reference)
+        photo_string = request.GET["photo_string"]
+        location = DateLocation(name=name, address=address, place_id=place_id, photo_reference=photo_reference, photo_string=photo_string)
         if len(DateLocation.objects.filter(place_id=place_id)) == 0:
             location.save()
             location.user.add(request.user)
@@ -117,6 +118,23 @@ def save_date_location(request):
         status = "failed"
 
     return JsonResponse({"status": status})
+
+# Delete a date idea for a user given the place_id
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def delete_date_location(request):
+    if not request.user.is_authenticated:
+        return NOT_AUTHED_RESPONSE
+    try:
+        place_id = request.GET["place_id"]
+        print(DateLocation.objects.filter(place_id=place_id, user=request.user).delete())
+        status = "success"
+
+    except Exception as e:
+        status = "failed"
+
+    return JsonResponse({"status": status})
+
 
 # Get the saved date locations for a user
 @api_view(["GET"])

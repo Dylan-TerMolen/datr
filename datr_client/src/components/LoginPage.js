@@ -85,11 +85,12 @@ export default function LoginPage() {
                 <div>{formStatus}</div>
               
             </form>
-            <p>Or login with Facebook!</p>
+            <p>Or login/register with Facebook!</p>
             <FacebookLogin
                 appId="214648120069247"
                 fields="name,email,picture"
-                callback={onFacebookResponse} 
+                callback={onFacebookResponse}
+                textButton="Login/Register with Facebook"
             />
         </div>
     )

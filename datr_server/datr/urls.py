@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
-from .views import logout_user, create_user, get_user_info, generate_new_idea, check_logged_in, get_saved_date_locations, save_date_location
+from .views import logout_user, create_user, get_user_info, check_logged_in,\
+generate_new_idea, get_saved_date_locations, save_date_location, delete_date_location
+
 from rest_framework_simplejwt import views as jwt_views
 from .social_login_views import social_auth
   
@@ -37,6 +39,7 @@ urlpatterns = [
     url('api/create_user', create_user),
     url('api/get_user_info', get_user_info),
     url('api/save_date_location', save_date_location),
+    url('api/delete_date_location', delete_date_location),
     url('api/get_saved_date_locations', get_saved_date_locations),
     url('api/generate_new_idea', generate_new_idea),
     url('api/check_logged_in', check_logged_in)
