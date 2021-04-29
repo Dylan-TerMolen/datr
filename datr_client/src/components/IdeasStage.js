@@ -2,8 +2,6 @@ import { useEffect, useState } from "react"
 import { Row, Button, Spinner } from "reactstrap"
 import DateCard from "./DateCard";
 
-/* f29173d6c733e677a74e703ca87c2a97 */
-
 export default function IdeasStage(props) {
     const [ideas, setIdeas] = useState(null)
 
@@ -36,18 +34,21 @@ export default function IdeasStage(props) {
     return (
         <div className="datr-background">
             {ideas !== null &&
+                <div>
                 <Row className="d-flex justify-content-center">
-                    {ideas.map((place, i) => 
-                    <DateCard 
-                        name={place.name} 
-                        address={place.address} 
-                        button={<Button color="danger" onClick={(e) => handleSaveLocation(e, place)}>Save Idea</Button>}
-                        photo_string={place.photo_string}
-                        rating={place.rating}
-                        totalRatings={place.total_ratings}
-                        key={i}
-                        />)}
-                </Row>
+                        {ideas.map((place, i) => 
+                        <DateCard 
+                            name={place.name} 
+                            address={place.address} 
+                            button={<Button color="danger" onClick={(e) => handleSaveLocation(e, place)}>Save Idea</Button>}
+                            photo_string={place.photo_string}
+                            rating={place.rating}
+                            totalRatings={place.total_ratings}
+                            key={i}
+                            />)}
+                    </Row>
+                    <div className="row justify-content-center mt-3"><Button color="danger" onClick={(e) => props.setStage(1)}>Start all over!</Button></div>
+                </div>
             }
             {ideas === null &&
             <div>
